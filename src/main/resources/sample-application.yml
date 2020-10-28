@@ -1,0 +1,38 @@
+server:
+  port: 18080
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: main-service
+        uri: <main-service-deployment-uri e.g:http://localhost:8082/>
+        predicates:
+        - Path=/**
+          
+okta:
+  oauth2:
+    issuer: <OKTA-issuer-uri>
+    audience: <OKTA-audience e.g:api://oidcauthserver>
+    client-id: <client-id>
+    client-secret: <client-secret>
+    scopes:
+    - openid 
+    - email  
+    - profile
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: <doscovery-service-url e.g:http://localhost:8761/eureka>
+  instance:
+    instance-id: ${spring.application.name}:${random.int}  
+
+logging:
+  level:
+    org.springframework.cloud.gateway: info
+    reactor.netty: info
+
