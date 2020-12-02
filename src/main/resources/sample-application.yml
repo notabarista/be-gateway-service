@@ -8,17 +8,53 @@ spring:
         locator:
           enabled: true
       routes:
-      - id: main-service
-        uri: <main-service-deployment-uri e.g:http://localhost:8082/>
-        predicates:
-        - Path=/**
           
+      - id: main-service
+#        uri: http://localhost:8082
+        uri: lb://main-service
+        predicates:
+        - Path=/*
+        filters:
+        - RewritePath=/(?<path>.*), /$\{path}/
+      
+      - id: openapi
+        uri: http://localhost:${server.port}
+        predicates:
+        - Path=/v3/api-docs/**
+        filters:
+        - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+      
+      - id: doc-service
+#        uri: http://localhost:9093
+        uri: lb://doc-service
+        predicates:
+        - Path=/doc/**
+        filters:
+        - RewritePath=/doc/(?<path>.*), /$\{path}
+     
+      - id: admin-service
+#        uri: http://localhost:8093
+        uri: lb://admin-service
+        predicates:
+        - Path=/admin/** 
+      
+      - id: user-management-service
+        uri: lb://user-management-service
+        predicates:
+        - Path=/user-management/**
+        filters:
+        - RewritePath=/user-management/(?<path>.*), /$\{path}
+      
+  main:
+    allow-bean-definition-overriding: true
+
 okta:
   oauth2:
-    issuer: <OKTA-issuer-uri>
-    audience: <OKTA-audience e.g:api://oidcauthserver>
-    client-id: <client-id>
-    client-secret: <client-secret>
+    issuer: https://dev-xxxxxx.okta.com/oauth2/auth-server
+    audience: api://audience
+    client-id: client-id
+    client-secret: client-secret
+#    redirect-uri: /authorization-code/callback
     scopes:
     - openid 
     - email  
@@ -26,13 +62,26 @@ okta:
 
 eureka:
   client:
+#    enabled: true
+#    register-with-eureka: true
     serviceUrl:
-      defaultZone: <doscovery-service-url e.g:http://localhost:8761/eureka>
+      defaultZone: http://localhost:8761/eureka
+#    fetchRegistry: true
+#    healthcheck:
+#      enabled: true
   instance:
     instance-id: ${spring.application.name}:${random.int}  
 
+logging.file: /var/log/${spring.application.name}.log              
 logging:
+  file: 
+    max-size: 10MB  
+    max-history: 2    
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"
+    file: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"
   level:
-    org.springframework.cloud.gateway: info
-    reactor.netty: info
+    root: debug      
+    '[org.springframework.cloud.gateway]': DEBUG
+    '[reactor.netty]': DEBUG
 
