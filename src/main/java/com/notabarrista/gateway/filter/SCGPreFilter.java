@@ -15,6 +15,12 @@ import java.time.Duration;
 
 /**
  * Add '- name: SCGPreFilter' to the gateway routes config for this to be used
+ * Also check that the gateway has the default filter
+ * spring:
+ *   cloud:
+ *     gateway:
+ *       default-filters:
+ *         - TokenRelay
  */
 @Component
 public class SCGPreFilter extends AbstractGatewayFilterFactory<SCGPreFilter.Config> {
