@@ -57,7 +57,7 @@ public class SCGPreFilter extends AbstractGatewayFilterFactory<SCGPreFilter.Conf
                     Jwt jwt = jwtVerifier.decode(jwtString);
                     request = exchange.getRequest().mutate()
                                       .header("uid", jwt.getClaims().get("uid").toString())
-                                      .header("emailClaim", jwt.getClaims().get("emailClaim").toString())
+                                      .header("email", jwt.getClaims().get("email").toString())
                                       .header("claims", jwt.getClaims().toString())
                                       .build();
                 } catch (JwtVerificationException e) {
