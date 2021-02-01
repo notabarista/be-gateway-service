@@ -4,6 +4,8 @@ server:
 spring:
   cloud:
     gateway:
+      default-filters:
+        - TokenRelay
       discovery:
         locator:
           enabled: true
@@ -44,6 +46,7 @@ spring:
         - Path=/user-management/**
         filters:
         - RewritePath=/user-management/(?<path>.*), /$\{path}
+        - name: SCGPreFilter
       
   main:
     allow-bean-definition-overriding: true
