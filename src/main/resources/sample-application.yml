@@ -18,6 +18,7 @@ spring:
         - Path=/*
         filters:
         - RewritePath=/(?<path>.*), /$\{path}/
+        - name: SPAGatewayFilter
       
       - id: openapi
         uri: http://localhost:${server.port}
