@@ -48,6 +48,13 @@ spring:
         filters:
         - RewritePath=/user-management/(?<path>.*), /$\{path}
         - name: SCGPreFilter
+      - id: be-ec-catalog-service
+        uri: lb://be-ec-catalog-service
+        predicates:
+        - Path=/catalog-service/**
+        filters:
+        - RewritePath=/catalog-service/(?<path>.*), /$\{path}
+        - name: SCGPreFilter
       
   main:
     allow-bean-definition-overriding: true

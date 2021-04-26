@@ -1,5 +1,6 @@
 package com.notabarrista.gateway;
 
+import com.okta.spring.boot.oauth.Okta;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,6 +27,9 @@ public class OktaOAuth2WebSecurity {
 				.anyExchange().authenticated().and().oauth2Login().and().oauth2ResourceServer().jwt();
 		http.headers().frameOptions().disable();
 		http.headers().xssProtection();
+
+		// Send a 401 message to the browser (w/o this, you'll see a blank page)
+		Okta.configureResourceServer401ResponseBody(http);
 
 		return http.build();
 	}
