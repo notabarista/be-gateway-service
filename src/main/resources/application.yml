@@ -10,16 +10,6 @@ spring:
         locator:
           enabled: true
       routes:
-          
-      - id: main-service
-#        uri: http://localhost:8082
-        uri: lb://main-service
-        predicates:
-        - Path=/*
-        filters:
-        - RewritePath=/(?<path>.*), /$\{path}/
-        - name: SPAGatewayFilter
-      
       - id: openapi
         uri: http://localhost:${server.port}
         predicates:
@@ -59,6 +49,15 @@ spring:
           - RewritePath=/catalog-service/(?<path>.*), /$\{path}
           - name: SCGPreFilter
 
+      - id: main-service
+#        uri: http://localhost:8082
+        uri: lb://main-service
+        predicates:
+          - Path=/*, /*/*
+        filters:
+          - RewritePath=/(?<path>.*), /$\{path}/
+          - name: SPAGatewayFilter
+
   main:
     allow-bean-definition-overriding: true
 
@@ -93,15 +92,18 @@ management:
         include:
           - '*'
           
-logging.file: /var/log/${spring.application.name}.log              
 logging:
-  file: 
-    max-size: 10MB  
-    max-history: 2    
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"
     file: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"
   level:
     root: info
     org.springframework: warn
-    com.notabarrista: info
+    org.notabarista: info
+    org.springframework.cloud: debug
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 2
+  file:
+    name: /var/log/${spring.application.name}.log

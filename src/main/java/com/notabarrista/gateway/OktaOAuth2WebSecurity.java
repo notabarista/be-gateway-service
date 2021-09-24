@@ -22,7 +22,7 @@ public class OktaOAuth2WebSecurity {
 		http.csrf().disable();
 		http.authorizeExchange().pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.pathMatchers("/*", "/static/**", "/assets/**", "/actuator/**", "/admin/**", "/doc-service/**",
-						"/discovery/**", "/eureka/**", "/health/**", "/loggers/**").permitAll()
+						"/discovery/**", "/eureka/**", "/health/**", "/loggers/**", "/item/**").permitAll()
 				.pathMatchers(HttpMethod.GET, "/catalog-service/**").permitAll()
 				.anyExchange().authenticated().and().oauth2Login().and().oauth2ResourceServer().jwt();
 		http.headers().frameOptions().disable();
