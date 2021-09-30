@@ -49,6 +49,14 @@ spring:
           - RewritePath=/catalog-service/(?<path>.*), /$\{path}
           - name: SCGPreFilter
 
+      - id: be-storage-service
+        uri: lb://be-storage-service
+        predicates:
+          - Path=/storage/**
+        filters:
+          - RewritePath=/storage/(?<path>.*), /$\{path}
+          - name: SCGPreFilter
+
       - id: main-service
 #        uri: http://localhost:8082
         uri: lb://main-service
@@ -100,7 +108,7 @@ logging:
     root: info
     org.springframework: warn
     org.notabarista: info
-    org.springframework.cloud: debug
+    org.springframework.cloud: info
   logback:
     rollingpolicy:
       max-file-size: 10MB
