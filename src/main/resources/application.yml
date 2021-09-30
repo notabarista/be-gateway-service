@@ -108,7 +108,7 @@ logging:
     root: info
     org.springframework: warn
     org.notabarista: info
-    org.springframework.cloud: debug
+    org.springframework.cloud: info
   logback:
     rollingpolicy:
       max-file-size: 10MB
